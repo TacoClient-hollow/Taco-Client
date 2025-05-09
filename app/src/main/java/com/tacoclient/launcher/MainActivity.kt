@@ -3,7 +3,6 @@ package com.tacoclient.launcher
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.GET_META_DATA
 import android.graphics.drawable.BitmapDrawable
@@ -27,14 +26,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppSettingsAlt
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Monitor
 import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material.icons.filled.Star
@@ -54,24 +51,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.tacoclient.launcher.ui.theme.TacoClientTheme
 
 class MainActivity : ComponentActivity() {
-    val mcInfo = mutableStateOf<PackageInfo?>(null)
+    private val mcInfo = mutableStateOf<PackageInfo?>(null)
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +93,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Preview
+    @Preview(device = Devices.AUTOMOTIVE_1024p)
     @Composable
     private fun Real() {
         val selected = remember { mutableIntStateOf(0) }
@@ -195,7 +190,7 @@ class MainActivity : ComponentActivity() {
         Box(Modifier
             .fillMaxSize()
             .paint(painterResource(R.drawable.background), contentScale = ContentScale.FillBounds), Alignment.BottomCenter) {
-            Column(Modifier.fillMaxWidth()) {
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(30.dp)) {
                 McInfoDisplay()
                 Box(Modifier
                     .fillMaxWidth()
