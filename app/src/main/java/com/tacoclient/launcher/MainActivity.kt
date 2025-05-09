@@ -76,13 +76,12 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val selected = mutableIntStateOf(0)
         enableEdgeToEdge()
         val window = this.window
         val decorView = window.decorView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val controller = WindowInsetsControllerCompat(window, decorView)
-                controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
@@ -95,15 +94,23 @@ class MainActivity : ComponentActivity() {
         }
         updateMcInfo(this)
         setContent {
-            TacoClientTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
-                    Row {
-                        Navigation(selected)
-                        when (selected.intValue) {
-                            0 -> LaunchScreen()
-                            1 -> SystemScreen()
-                            2 -> SettingScreen()
-                        }
+            Real()
+        }
+    }
+
+    @Preview
+    @Composable
+    private fun Real() {
+        val selected = remember { mutableIntStateOf(0) }
+        TacoClientTheme {
+            Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+                println(paddingValues)
+                Row {
+                    Navigation(selected)
+                    when (selected.intValue) {
+                        1 -> SystemScreen()
+                        2 -> SettingScreen()
+                        else -> LaunchScreen()
                     }
                 }
             }
@@ -125,7 +132,7 @@ class MainActivity : ComponentActivity() {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(280.dp)
+                .fillMaxWidth(0.2722f)
                 .verticalScroll(rememberScrollState())
                 .background(Color(0xff1b1d2e))
                 .padding(30.dp),
@@ -185,10 +192,15 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun LaunchScreen() {
-        Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.background), contentScale = ContentScale.FillBounds), Alignment.BottomCenter) {
+        Box(Modifier
+            .fillMaxSize()
+            .paint(painterResource(R.drawable.background), contentScale = ContentScale.FillBounds), Alignment.BottomCenter) {
             Column(Modifier.fillMaxWidth()) {
                 McInfoDisplay()
-                Box(Modifier.fillMaxWidth().height(40.dp).background(Color(0xff13171c)))
+                Box(Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .background(Color(0xff13171c)))
             }
             TextButton({
                 prepareLauncher {
@@ -198,7 +210,11 @@ class MainActivity : ComponentActivity() {
                     })
                     finish()
                 }
-            }, Modifier.padding(20.dp).width(400.dp).height(60.dp).background(Color(0xff0e121a), MaterialTheme.shapes.extraLarge)) {
+            }, Modifier
+                .padding(20.dp)
+                .width(400.dp)
+                .height(60.dp)
+                .background(Color(0xff0e121a), MaterialTheme.shapes.extraLarge)) {
                 Text("Launch")
             }
         }
@@ -208,7 +224,10 @@ class MainActivity : ComponentActivity() {
     private fun McInfoDisplay() {
         val context = LocalContext.current
         val icon: BitmapDrawable = (mcInfo.value?.applicationInfo?.loadIcon(context.packageManager) ?: ContextCompat.getDrawable(context, R.drawable.gray_mc) ) as BitmapDrawable
-        Row(Modifier.padding(15.dp).background(Color(0xff1b1d2e)).padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier
+            .padding(15.dp)
+            .background(Color(0xff1b1d2e))
+            .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Image(icon.bitmap.asImageBitmap(),"Minecraft Icon", Modifier.requiredSize(35.dp))
             Text(mcInfo.value?.versionName ?: "No Minecraft Installed", Modifier.padding(horizontal = 10.dp))
         }

@@ -66,11 +66,6 @@ fun Context.prepareLauncher(onFinish: (ArrayList<String>) -> Unit = {}) {
                     }
                 }
             }
-//            launchIntent.value = Intent(this, classLoader.loadClass("$MINECRAFT.Selaura")).apply {
-//                putStringArrayListExtra("APKS", ArrayList(mcInfo.apks))
-//                flags = FLAG_ACTIVITY_NO_ANIMATION
-//            }
-            println(mcInfo.apks)
             onFinish(ArrayList(mcInfo.apks))
         } catch (e: Exception) {
             e.printStackTrace()
