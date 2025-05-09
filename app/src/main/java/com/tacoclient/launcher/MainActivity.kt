@@ -3,7 +3,6 @@ package com.tacoclient.launcher
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager.GET_META_DATA
 import android.graphics.drawable.BitmapDrawable
@@ -27,14 +26,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppSettingsAlt
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Monitor
 import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material.icons.filled.Star
@@ -54,35 +51,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.tacoclient.launcher.ui.theme.TacoClientTheme
 
 class MainActivity : ComponentActivity() {
-    val mcInfo = mutableStateOf<PackageInfo?>(null)
+    private val mcInfo = mutableStateOf<PackageInfo?>(null)
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val selected = mutableIntStateOf(0)
         enableEdgeToEdge()
         val window = this.window
         val decorView = window.decorView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val controller = WindowInsetsControllerCompat(window, decorView)
-                controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
@@ -95,15 +89,23 @@ class MainActivity : ComponentActivity() {
         }
         updateMcInfo(this)
         setContent {
-            TacoClientTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) {
-                    Row {
-                        Navigation(selected)
-                        when (selected.intValue) {
-                            0 -> LaunchScreen()
-                            1 -> SystemScreen()
-                            2 -> SettingScreen()
-                        }
+            Real()
+        }
+    }
+
+    @Preview(device = Devices.AUTOMOTIVE_1024p)
+    @Composable
+    private fun Real() {
+        val selected = remember { mutableIntStateOf(0) }
+        TacoClientTheme {
+            Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+                println(paddingValues)
+                Row {
+                    Navigation(selected)
+                    when (selected.intValue) {
+                        1 -> SystemScreen()
+                        2 -> SettingScreen()
+                        else -> LaunchScreen()
                     }
                 }
             }
@@ -125,7 +127,7 @@ class MainActivity : ComponentActivity() {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(280.dp)
+                .fillMaxWidth(0.2722f)
                 .verticalScroll(rememberScrollState())
                 .background(Color(0xff1b1d2e))
                 .padding(30.dp),
@@ -185,10 +187,15 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun LaunchScreen() {
-        Box(Modifier.fillMaxSize().paint(painterResource(R.drawable.background), contentScale = ContentScale.FillBounds), Alignment.BottomCenter) {
-            Column(Modifier.fillMaxWidth()) {
+        Box(Modifier
+            .fillMaxSize()
+            .paint(painterResource(R.drawable.background), contentScale = ContentScale.FillBounds), Alignment.BottomCenter) {
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(30.dp)) {
                 McInfoDisplay()
-                Box(Modifier.fillMaxWidth().height(40.dp).background(Color(0xff13171c)))
+                Box(Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .background(Color(0xff13171c)))
             }
             TextButton({
                 prepareLauncher {
@@ -198,7 +205,11 @@ class MainActivity : ComponentActivity() {
                     })
                     finish()
                 }
-            }, Modifier.padding(20.dp).width(400.dp).height(60.dp).background(Color(0xff0e121a), MaterialTheme.shapes.extraLarge)) {
+            }, Modifier
+                .padding(20.dp)
+                .width(400.dp)
+                .height(60.dp)
+                .background(Color(0xff0e121a), MaterialTheme.shapes.extraLarge)) {
                 Text("Launch")
             }
         }
@@ -208,7 +219,10 @@ class MainActivity : ComponentActivity() {
     private fun McInfoDisplay() {
         val context = LocalContext.current
         val icon: BitmapDrawable = (mcInfo.value?.applicationInfo?.loadIcon(context.packageManager) ?: ContextCompat.getDrawable(context, R.drawable.gray_mc) ) as BitmapDrawable
-        Row(Modifier.padding(15.dp).background(Color(0xff1b1d2e)).padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier
+            .padding(15.dp)
+            .background(Color(0xff1b1d2e))
+            .padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Image(icon.bitmap.asImageBitmap(),"Minecraft Icon", Modifier.requiredSize(35.dp))
             Text(mcInfo.value?.versionName ?: "No Minecraft Installed", Modifier.padding(horizontal = 10.dp))
         }

@@ -63,7 +63,7 @@ val prepareLauncherDex by tasks.registering {
         val outDir = assetsDir.asFile
         val sdkDir = android.sdkDirectory.absolutePath
         val btVersion = android.buildToolsVersion
-        val d8Path = "$sdkDir${File.separator}build-tools${File.separator}$btVersion${File.separator}d8.bat"
+        val d8Path = "$sdkDir${File.separator}build-tools${File.separator}$btVersion${File.separator}d8"
         val execOperations = project.serviceOf<ExecOperations>()
 
         execOperations.exec {
@@ -82,7 +82,6 @@ tasks.named("preBuild") {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -99,4 +98,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.appcompat)
 }

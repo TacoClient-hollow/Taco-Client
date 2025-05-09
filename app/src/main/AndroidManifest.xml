@@ -107,7 +107,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             tools:ignore="DiscouragedApi">
             <meta-data
                 android:name="android.app.lib_name"
